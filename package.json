@@ -7,23 +7,24 @@
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "start": "node --loader ts-node/esm src/app.ts",
+    "dev": "ts-node src/server.ts",
     "seed": "node --loader ts-node/esm prisma/seed.ts",
-    "dev": "npm run seed && npm run start",
-    "dev:watch": "nodemon --watch 'src/**/*.ts' --exec 'node --loader ts-node/esm' src/app.ts"
+    "crawl:google": "node --loader ts-node/esm src/googleTrendsCrawler.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.16.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "playwright": "^1.55.0"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "@types/node": "^24.3.1",
     "nodemon": "^3.1.10",
+    "prisma": "^6.16.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.2",
-    "prisma": "^6.16.1"
+    "typescript": "^5.9.2"
   }
 }
