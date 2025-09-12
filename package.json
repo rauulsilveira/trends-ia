@@ -7,7 +7,7 @@
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "start": "node --loader ts-node/esm src/app.ts",
-    "dev": "ts-node src/server.ts",
+    "dev": "node --loader ts-node/esm src/app.ts",
     "seed": "node --loader ts-node/esm prisma/seed.ts",
     "crawl:google": "node --loader ts-node/esm src/googleTrendsCrawler.ts"
   },

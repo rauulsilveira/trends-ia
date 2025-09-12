@@ -14,12 +14,26 @@ function getDayRange(date: Date) {
   return { start, end };
 }
 
+// Função para normalizar volume (2M+ -> 2000000)
+function normalizeVolume(volumeStr: string) {
+  if (!volumeStr) return 0;
+  let num = volumeStr.replace(/\D/g, "");
+  return parseInt(num) || 0;
+}
+
+// Função para normalizar crescimento percentual (1.000% -> 10.0)
+function normalizeGrowth(percentStr: string) {
+  if (!percentStr) return 0;
+  return parseFloat(percentStr.replace(/[^0-9.-]/g, "")) || 0;
+}
+
 async function main() {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
 
   await page.goto("https://trends.google.com.br/trending?geo=BR", { waitUntil: "networkidle" });
 
+  // ⚠️ Seletores podem quebrar se o Google mudar classes
   const trends = await page.$$eval("td.enOdEe-wZVHld-aOtOmf", (cards) =>
     cards.map((card) => {
       const titleEl = card.querySelector("div.mZ3RIc");
@@ -31,22 +45,15 @@ async function main() {
       const statusEl = card.querySelector("div.QxIiwc div");
       const status = statusEl?.textContent?.trim() || "";
 
-      const timeEl = card.querySelector("div.A7jE4");
-      const timeSince = timeEl?.textContent?.trim() || "";
-
-      return { title, volume, status, timeSince };
+      return { title, volume, status };
     })
   );
 
   const today = new Date();
   const { start, end } = getDayRange(today);
 
-  // Limpa seeds antigos antes de salvar
-  await prisma.trend.deleteMany({
-    where: { source: "seed" },
-  });
-
   let savedCount = 0;
+
   for (const t of trends) {
     if (!t.title) continue;
 
@@ -65,13 +72,19 @@ async function main() {
       await prisma.trend.create({
         data: {
           title: t.title,
-          summary: "",       // IA gera depois
-          url: "",           // não existe no Google Trends
-          thumbnail: "",     // IA gera depois
-          tags: JSON.stringify([]), // IA gera depois
+          summary: "",                   // IA gera depois
+          url: "",                       // não existe no Google Trends
+          thumbnail: "",                 // IA gera depois
+          tags: JSON.stringify([]),      // IA gera depois
           source: "google",
           trendDate: today,
           processedAt: null,
+          contentGenerated: false,
+          thumbnailGenerated: false,
+          visibleToAdmin: true,
+          publishedAt: null,
+          searchVolume: normalizeVolume(t.volume),
+          growthPercent: normalizeGrowth(t.status),
         },
       });
       savedCount++;
