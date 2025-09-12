@@ -7,7 +7,7 @@
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "start": "node --loader ts-node/esm src/app.ts",
-    "dev": "ts-node src/server.ts",
+    "dev": "node --loader ts-node/esm src/app.ts",
     "seed": "node --loader ts-node/esm prisma/seed.ts",
     "crawl:google": "node --loader ts-node/esm src/googleTrendsCrawler.ts"
   },
@@ -16,6 +16,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
+    "openai": "^5.20.2",
     "playwright": "^1.55.0"
   },
   "devDependencies": {

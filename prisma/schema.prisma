@@ -8,20 +8,25 @@ datasource db {
 }
 
 model Trend {
-  id               Int      @id @default(autoincrement())
-  title            String
-  summary          String
-  url              String?
-  thumbnail        String?
-  tags             String
-  source           String
-  trendDate        DateTime
-  processedAt      DateTime?
-  createdAt        DateTime @default(now())
-
-  approved         Boolean  @default(false)
-  rejected         Boolean  @default(false)
-  rewriteRequested Boolean  @default(false)
+  id                 Int      @id @default(autoincrement())
+  title              String
+  summary            String
+  url                String?
+  thumbnail          String?
+  tags               String
+  source             String
+  trendDate          DateTime
+  processedAt        DateTime?
+  createdAt          DateTime @default(now())
+  approved           Boolean  @default(false)
+  rejected           Boolean  @default(false)
+  rewriteRequested   Boolean  @default(false)
+  contentGenerated   Boolean  @default(false)
+  thumbnailGenerated Boolean  @default(false)
+  visibleToAdmin     Boolean  @default(true)
+  publishedAt        DateTime?
+  searchVolume       Int?
+  growthPercent      Float?
 }
 
 
