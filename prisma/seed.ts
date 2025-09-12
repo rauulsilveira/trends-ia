@@ -14,21 +14,30 @@ async function main() {
         summary: "Jogo X lançou uma expansão cheia de novas fases e personagens.",
         url: "https://exemplo.com/noticia/jogo-x",
         thumbnail: "https://via.placeholder.com/150",
-        tags: JSON.stringify(["games", "expansão", "lançamento"])
+        tags: JSON.stringify(["games", "expansão", "lançamento"]),
+        source: "google",
+        trendDate: new Date(),
+        processedAt: new Date()
       },
       {
         title: "Jogo Y bate recorde de players online",
         summary: "O jogo Y registrou mais de 1 milhão de jogadores simultâneos.",
         url: "https://exemplo.com/noticia/jogo-y",
         thumbnail: "https://via.placeholder.com/150",
-        tags: JSON.stringify(["games", "recorde", "online"])
+        tags: JSON.stringify(["games", "recorde", "online"]),
+        source: "google",
+        trendDate: new Date(),
+        processedAt: new Date()
       },
       {
         title: "Evento de esports Z acontece neste fim de semana",
         summary: "O campeonato Z terá transmissões ao vivo com grandes equipes.",
         url: "https://exemplo.com/noticia/esports-z",
         thumbnail: "https://via.placeholder.com/150",
-        tags: JSON.stringify(["esports", "evento", "transmissão"])
+        tags: JSON.stringify(["esports", "evento", "transmissão"]),
+        source: "google",
+        trendDate: new Date(),
+        processedAt: new Date()
       }
     ]
   });
