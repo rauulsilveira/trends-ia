@@ -8,12 +8,14 @@ datasource db {
 }
 
 model Trend {
-  id        Int     @id @default(autoincrement())
-  title     String
-  summary   String
-  url       String?       // <- aqui é importante que exista
-  thumbnail String?
-  tags      String        // JSON string
+  id           Int      @id @default(autoincrement())
+  title        String
+  summary      String
+  url          String?
+  thumbnail    String?
+  tags         String
+  source       String   @default("google")   // default temporário
+  trendDate    DateTime @default(now())      // default temporário
+  processedAt  DateTime?
+  createdAt    DateTime @default(now())
 }
-
-
