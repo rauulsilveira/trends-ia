@@ -2,14 +2,14 @@
   "name": "backend",
   "version": "1.0.0",
   "type": "module",
-  "main": "src/app.ts",
   "scripts": {
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "start": "node --loader ts-node/esm src/app.ts",
     "dev": "node --loader ts-node/esm src/app.ts",
     "seed": "node --loader ts-node/esm prisma/seed.ts",
-    "crawl:google": "node --loader ts-node/esm src/googleTrendsCrawler.ts"
+    "crawl:google": "node --loader ts-node/esm src/googleTrendsCrawler.ts",
+    "worker": "ts-node-esm src/trendWorker.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.16.1",
@@ -22,10 +22,12 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
-    "@types/node": "^24.3.1",
+    "@types/node": "^24.3.2",
     "nodemon": "^3.1.10",
     "prisma": "^6.16.1",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.20.5",
     "typescript": "^5.9.2"
   }
 }
