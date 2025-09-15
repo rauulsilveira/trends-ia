@@ -29,4 +29,12 @@ model Trend {
   growthPercent      Float?
 }
 
+model User {
+  id         Int      @id @default(autoincrement())
+  facebookId String   @unique
+  name       String
+  picture    String?
+  createdAt  DateTime @default(now())
+}
+
 
