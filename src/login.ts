@@ -1,15 +1,38 @@
-// src/routes/login.ts
-import express from "express";
-import {  authenticateFacebookUser } from "./mockFacebookAuth.js";   
+import { Router, Request, Response } from "express";
+import prisma from "./prismaClient.js";
 
-const router = express.Router();
+const USE_FACEBOOK_MOCK = process.env.USE_FACEBOOK_MOCK === "true";
 
-router.post("/login", async (req, res) => {
+const router = Router();
+
+async function authenticateFacebookUser(token: string) {
+  if (USE_FACEBOOK_MOCK) {
+    console.log("Usando mock do Facebook para login");
+    const mockUser = {
+      id: "mock123",
+      name: "Usuário Mock",
+      picture: "https://placekitten.com/200/200",
+    };
+
+    const user = await prisma.user.upsert({
+      where: { facebookId: mockUser.id },
+      update: { name: mockUser.name, picture: mockUser.picture },
+      create: { facebookId: mockUser.id, name: mockUser.name, picture: mockUser.picture },
+    });
+
+    return user;
+  }
+
+  // Aqui entraria a lógica real com token do Facebook
+  throw new Error("Login real do Facebook não implementado ainda");
+}
+
+router.post("/login", async (req: Request, res: Response) => {
   try {
     const { token } = req.body;
+    if (!token) return res.status(400).json({ error: "Token não enviado" });
 
-    // usando mock por enquanto
-    const user = await  authenticateFacebookUser(token);
+    const user = await authenticateFacebookUser(token);
 
     res.json({ user });
   } catch (err) {
@@ -19,3 +42,4 @@ router.post("/login", async (req, res) => {
 });
 
 export default router;
+export { authenticateFacebookUser };

@@ -3,14 +3,15 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "prisma:generate": "prisma generate",
-    "prisma:push": "prisma db push",
-    "start": "tsx src/app.ts",
-    "dev": "tsx src/app.ts",
-    "seed": "tsx prisma/seed.ts",
-    "crawl:google": "tsx src/googleTrendsCrawler.ts",
-    "worker": "tsx src/trendWorker.ts"
-  },
+  "prisma:generate": "prisma generate",
+  "prisma:push": "prisma db push",
+  "dev": "tsx src/server.ts",
+  "start": "node dist/server.js",
+  "build": "tsc",
+  "seed": "tsx prisma/seed.ts",
+  "crawl:google": "tsx src/googleTrendsCrawler.ts",
+  "worker": "tsx src/trendWorker.ts"
+},
   "dependencies": {
     "@prisma/client": "^6.16.1",
     "cors": "^2.8.5",
