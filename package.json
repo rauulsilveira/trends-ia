@@ -5,11 +5,11 @@
   "scripts": {
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
-    "start": "node --loader ts-node/esm src/app.ts",
-    "dev": "node --loader ts-node/esm src/app.ts",
-    "seed": "node --loader ts-node/esm prisma/seed.ts",
-    "crawl:google": "node --loader ts-node/esm src/googleTrendsCrawler.ts",
-    "worker": "ts-node-esm src/trendWorker.ts"
+    "start": "tsx src/app.ts",
+    "dev": "tsx src/app.ts",
+    "seed": "tsx prisma/seed.ts",
+    "crawl:google": "tsx src/googleTrendsCrawler.ts",
+    "worker": "tsx src/trendWorker.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.16.1",
@@ -17,6 +17,7 @@
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "openai": "^5.20.2",
+    "p-limit": "^7.1.1",
     "playwright": "^1.55.0"
   },
   "devDependencies": {
