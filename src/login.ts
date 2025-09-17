@@ -1,45 +1,76 @@
-import { Router, Request, Response } from "express";
+import express from "express";
 import prisma from "./prismaClient.js";
+import jwt from "jsonwebtoken";
 
-const USE_FACEBOOK_MOCK = process.env.USE_FACEBOOK_MOCK === "true";
+const router = express.Router();
 
-const router = Router();
-
-async function authenticateFacebookUser(token: string) {
-  if (USE_FACEBOOK_MOCK) {
-    console.log("Usando mock do Facebook para login");
-    const mockUser = {
-      id: "mock123",
-      name: "Usuário Mock",
-      picture: "https://placekitten.com/200/200",
+// Tipo para resposta do Facebook
+interface FacebookUser {
+  id: string;
+  name: string;
+  picture?: {
+    data?: {
+      url?: string;
     };
-
-    const user = await prisma.user.upsert({
-      where: { facebookId: mockUser.id },
-      update: { name: mockUser.name, picture: mockUser.picture },
-      create: { facebookId: mockUser.id, name: mockUser.name, picture: mockUser.picture },
-    });
-
-    return user;
-  }
-
-  // Aqui entraria a lógica real com token do Facebook
-  throw new Error("Login real do Facebook não implementado ainda");
+  };
+  error?: {
+    message: string;
+    type: string;
+    code: number;
+  };
 }
 
-router.post("/login", async (req: Request, res: Response) => {
+// Login com Facebook
+router.post("/facebook", async (req, res) => {
   try {
-    const { token } = req.body;
-    if (!token) return res.status(400).json({ error: "Token não enviado" });
+    const { accessToken } = req.body;
 
-    const user = await authenticateFacebookUser(token);
+    if (!accessToken) {
+      return res.status(400).json({ error: "AccessToken não enviado" });
+    }
 
-    res.json({ user });
+    // 1. Valida token no Facebook
+    const fbResponse = await fetch(
+      `https://graph.facebook.com/me?fields=id,name,picture&access_token=${accessToken}`
+    );
+
+    const fbData: FacebookUser = await fbResponse.json();
+
+    if (fbData.error) {
+      return res.status(401).json({ error: "Token inválido" });
+    }
+
+    // 2. Cria ou atualiza usuário no banco
+    const user = await prisma.user.upsert({
+      where: { facebookId: fbData.id },
+      update: {
+        name: fbData.name,
+        picture: fbData.picture?.data?.url,
+      },
+      create: {
+        facebookId: fbData.id,
+        name: fbData.name,
+        picture: fbData.picture?.data?.url,
+      },
+    });
+
+    // 3. Gera JWT
+    const token = jwt.sign(
+      { id: user.id, role: user.role },
+      process.env.JWT_SECRET || "trendly_secret",
+      { expiresIn: "7d" }
+    );
+
+    res.json({ token, user });
   } catch (err) {
-    console.error(err);
-    res.status(400).json({ error: "Erro ao autenticar usuário" });
+    console.error("Erro no login com Facebook:", err);
+    res.status(500).json({ error: "Erro interno" });
   }
 });
 
+// Logout (apenas simbólico no backend)
+router.post("/logout", (_req, res) => {
+  res.json({ message: "Logout realizado com sucesso" });
+});
+
 export default router;
-export { authenticateFacebookUser };

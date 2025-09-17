@@ -2,6 +2,7 @@ import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import loginRouter from "./login.js";
+import adminRouter from "./adminRoutes.js"; // <--- import admin
 
 const app = express();
 
@@ -11,6 +12,7 @@ app.use(bodyParser.json());
 
 // Rotas
 app.use("/auth", loginRouter);
+app.use("/admin", adminRouter); // <--- registrar admin
 
 // Rota teste
 app.get("/", (_req: Request, res: Response) => {
