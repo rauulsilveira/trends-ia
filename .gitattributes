@@ -1,0 +1,5 @@
+# Força LF nos arquivos de código
+*.ts text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.sql text eol=lf

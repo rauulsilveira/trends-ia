@@ -1,34 +1,30 @@
 {
-  "name": "backend",
+  "name": "trends-ia",
   "version": "1.0.0",
-  "type": "module",
+  "private": true,
   "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm start",
+    "crawl:google": "cd backend && npm run crawl:google",
+    "worker": "cd backend && npm run worker",
+    "dev:full": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\" \"npm run worker\"",
+    "setup": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "build": "cd backend && npm run build && cd ../frontend && npm run build",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
-    "start": "tsx src/app.ts",
-    "dev": "tsx src/app.ts",
-    "seed": "tsx prisma/seed.ts",
-    "crawl:google": "tsx src/googleTrendsCrawler.ts",
-    "worker": "tsx src/trendWorker.ts"
+    "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@prisma/client": "^6.16.1",
-    "cors": "^2.8.5",
-    "dotenv": "^17.2.2",
-    "express": "^5.1.0",
-    "openai": "^5.20.2",
-    "p-limit": "^7.1.1",
-    "playwright": "^1.55.0"
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "typescript": "^5.9.2"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.19",
-    "@types/express": "^5.0.3",
-    "@types/node": "^24.3.2",
-    "nodemon": "^3.1.10",
-    "prisma": "^6.16.1",
-    "ts-node": "^10.9.2",
-    "tsconfig-paths": "^4.2.0",
-    "tsx": "^4.20.5",
-    "typescript": "^5.9.2"
+    "@types/react": "^19.1.13",
+    "@types/react-dom": "^19.1.9",
+    "concurrently": "^8.0.0",
+    "prisma": "^6.16.2"
   }
 }

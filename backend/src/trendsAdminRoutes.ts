@@ -1,0 +1,128 @@
+import express, { Request, Response, NextFunction } from "express";
+import { PrismaClient, Trend } from "@prisma/client";
+import { generateTrendContent } from "./aiProcessor.js";
+
+const prisma = new PrismaClient();
+const router = express.Router();
+
+// Middleware simulação admin
+function isAdmin(req: Request & { user?: { role?: string } }, res: Response, next: NextFunction) {
+  req.user = { role: "admin" };
+  next();
+}
+
+// 🟢 Função helper para atualizar trend
+async function updateTrend(id: number, data: Partial<Trend>, actionName: string) {
+  const trend = await prisma.trend.findUnique({ where: { id } });
+  if (!trend) throw new Error("Trend não encontrada");
+
+  const updated = await prisma.trend.update({ where: { id }, data });
+  console.info(`Trend ${id} - ${actionName}`);
+  return updated;
+}
+
+// GET: trends pendentes (com filtros e paginação)
+router.get("/trends/pending", isAdmin, async (req: Request, res: Response) => {
+  try {
+    const readyOnly = String(req.query.readyOnly || "0") === "1";
+    const limit = Math.min(parseInt(String(req.query.limit || 20), 10) || 20, 100);
+    const offset = parseInt(String(req.query.offset || 0), 10) || 0;
+
+    const where: any = { approved: false, rejected: false, visibleToAdmin: true };
+    if (readyOnly) {
+      where.contentGenerated = true;
+    }
+
+    const [items, total] = await Promise.all([
+      prisma.trend.findMany({
+        where,
+        orderBy: { trendDate: "desc" },
+        take: limit,
+        skip: offset,
+      }),
+      prisma.trend.count({ where }),
+    ]);
+
+    res.json({ items, total, limit, offset });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Erro ao buscar trends pendentes" });
+  }
+});
+
+// POST: aprovar trend
+router.post("/trends/:id/approve", isAdmin, async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+    const updated = await updateTrend(id, { approved: true, rejected: false, rewriteRequested: false, publishedAt: new Date() }, "aprovada");
+    res.json({ success: true, trend: updated });
+  } catch (error: any) {
+    console.error(error);
+    res.status(error.message === "Trend não encontrada" ? 404 : 500).json({ error: error.message });
+  }
+});
+
+// POST: rejeitar trend
+router.post("/trends/:id/reject", isAdmin, async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+    const updated = await updateTrend(id, { approved: false, rejected: true, rewriteRequested: false }, "rejeitada");
+    res.json({ success: true, trend: updated });
+  } catch (error: any) {
+    console.error(error);
+    res.status(error.message === "Trend não encontrada" ? 404 : 500).json({ error: error.message });
+  }
+});
+
+// POST: remover (soft delete) trend
+router.post("/trends/:id/delete", isAdmin, async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+    const updated = await updateTrend(id, { visibleToAdmin: false, approved: false, rejected: true }, "removida");
+    res.json({ success: true, trend: updated });
+  } catch (error: any) {
+    console.error(error);
+    res.status(error.message === "Trend não encontrada" ? 404 : 500).json({ error: error.message });
+  }
+});
+
+// POST: pedir reescrita via IA (com processamento imediato)
+router.post("/trends/:id/rewrite", isAdmin, async (req: Request, res: Response) => {
+  try {
+    const id = Number(req.params.id);
+    const trend = await prisma.trend.findUnique({ where: { id } });
+    if (!trend) return res.status(404).json({ error: "Trend não encontrada" });
+
+    // Marcar para reescrita
+    await prisma.trend.update({ where: { id }, data: { rewriteRequested: true, approved: false } });
+
+    // Processar via IA imediatamente
+    const processed = await generateTrendContent(trend.id, trend.title);
+
+    res.json({ success: true, message: "Trend reescrita via IA", trend: { ...trend, ...processed } });
+  } catch (error: any) {
+    console.error(error);
+    res.status(error.message === "Trend não encontrada" ? 404 : 500).json({ error: error.message });
+  }
+});
+
+// 🟢 Processar trends via IA (enfileirar para worker)
+router.post("/trends/process", isAdmin, async (req: Request, res: Response) => {
+  try {
+    const pendingTrends = await prisma.trend.findMany({
+      where: { approved: false, rejected: false, contentGenerated: false },
+      orderBy: { trendDate: "desc" },
+    });
+
+    const enqueuedIds = pendingTrends.map(t => t.id);
+    console.info(`Trends enfileiradas para processamento: ${enqueuedIds.join(", ")}`);
+
+    // Não processa direto, o worker em background vai cuidar disso
+    res.json({ message: "Trends enfileiradas para processamento via worker", enqueuedIds });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erro ao enfileirar trends" });
+  }
+});
+
+export default router;
