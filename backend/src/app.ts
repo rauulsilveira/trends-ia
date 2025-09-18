@@ -1,19 +1,34 @@
-import express from "express"; // aqui o problema é: ECMAScript imports and exports cannot be written in a CommonJS file under 'verbatimModuleSyntax'. Adjust the 'type' field in the nearest 'package.json' to make this file an ECMAScript module, or adjust your 'verbatimModuleSyntax', 'module', and 'moduleResolution' settings in TypeScript.ts(1295)
-import cors from "cors"; // aqui o problema é: Não foi possível localizar o arquivo de declaração para o módulo 'cors'. 'c:/WorkSpace ME/Trends-ia/backend/node_modules/cors/lib/index.js' tem implicitamente um tipo 'any'.
-import dotenv from "dotenv";// aqui o problema é ECMAScript imports and exports cannot be written in a CommonJS file under 'verbatimModuleSyntax'. Adjust the 'type' field in the nearest 'package.json' to make this file an ECMAScript module, or adjust your 'verbatimModuleSyntax', 'module', and 'moduleResolution' settings in TypeScript.
-
-dotenv.config();
+import express, { Request, Response, NextFunction } from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import loginRouter from "./login.js";
+import adminRouter from "./adminRoutes.js"; // <--- rotas admin (users)
+import usersAdminRouter from "./usersAdminRoutes.js"; // <--- rotas admin (users) - nova
+import trendsAdminRouter from "./trendsAdminRoutes.js"; // <--- rotas admin (trends)
+import publicTrendsRouter from "./trendsPublicRoutes.js";
 
 const app = express();
+
+// Middlewares
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
 
-const PORT = process.env.PORT || 4000;
+// Rotas
+app.use("/auth", loginRouter);
+app.use("/admin", adminRouter); // /admin/users, /admin/users/blocked, etc
+app.use("/admin", usersAdminRouter); // /admin/users/* (gerenciar usuários)
+app.use("/admin", trendsAdminRouter); // /admin/trends/* (pending, approve, reject, rewrite, process)
+app.use("/public", publicTrendsRouter);
 
-app.get("/", (req, res) => {
+// Rota teste
+app.get("/", (_req: Request, res: Response) => {
   res.send("Backend Trends IA funcionando!");
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor rodando em http://localhost:${PORT}`);
+// Tratamento global de erros
+app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+  console.error("Erro não capturado:", err);
+  res.status(500).json({ error: "Erro interno do servidor" });
 });
+
+export default app;

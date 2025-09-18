@@ -1,0 +1,54 @@
+// schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Trend {
+  id                 Int       @id @default(autoincrement())
+  title              String
+  summary            String
+  url                String?
+  thumbnail          String?
+  tags               String
+  source             String
+  trendDate          DateTime
+  processedAt        DateTime?
+  createdAt          DateTime  @default(now())
+  approved           Boolean   @default(false)
+  rejected           Boolean   @default(false)
+  rewriteRequested   Boolean   @default(false)
+  contentGenerated   Boolean   @default(false)
+  thumbnailGenerated Boolean   @default(false)
+  visibleToAdmin     Boolean   @default(true)
+  publishedAt        DateTime?
+  searchVolume       Int?
+  growthPercent      Float?
+  retryCount         Int?      @default(0)
+  nextRetryAt        DateTime?
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  facebookId String   @unique
+  name       String
+  picture    String?
+  role       String   @default("user")     // user/admin
+  status     String   @default("ativo")    // ativo/bloqueado
+  createdAt  DateTime @default(now())
+  LoginLogs  LoginLog[]
+}
+
+model LoginLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  action    String   // "login" ou "logout"
+  ip        String?  // opcional
+  device    String?  // opcional
+  createdAt DateTime @default(now())
+}

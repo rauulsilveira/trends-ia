@@ -1,0 +1,119 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Animação para o timer de erro */
+@keyframes errorTimer {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+/* Animações para os toasts de erro */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Esconde completamente o overlay gigante de erro do React */
+body > div[style*="position: fixed"][style*="top: 0"][style*="left: 0"][style*="background-color: rgba(206, 17, 38, 0.1)"] {
+  display: none !important;
+}
+
+/* Corrige o overlay gigante de erro do React (fallback) */
+body > div[style*="position: fixed"][style*="top: 0"][style*="left: 0"] {
+  position: fixed !important;
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  bottom: auto !important;
+  width: 400px !important;
+  max-width: 90vw !important;
+  height: auto !important;
+  max-height: 80vh !important;
+  background: #1f2937 !important;
+  border: 1px solid #ef4444 !important;
+  border-radius: 8px !important;
+  padding: 16px !important;
+  z-index: 9999 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
+  color: #f3f4f6 !important;
+  font-family: Menlo, Consolas, monospace !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  overflow: auto !important;
+}
+
+/* Corrige o overlay gigante de erro do Facebook */
+#fb-root > div[style*="position: fixed"] {
+  width: auto !important;
+  max-width: 400px !important;
+  height: auto !important;
+  max-height: 300px !important;
+  top: 20px !important;
+  right: 20px !important;
+  left: auto !important;
+  bottom: auto !important;
+  background: #1f2937 !important;
+  border: 1px solid #ef4444 !important;
+  border-radius: 8px !important;
+  padding: 16px !important;
+  z-index: 9999 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
+  color: #f3f4f6 !important;
+  font-family: Menlo, Consolas, monospace !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  overflow: auto !important;
+}
+
+/* Corrige o toast de erro do Facebook (que às vezes vira overlay gigante) */
+#fb-root > div[style*="position: fixed"] {
+  width: auto !important;
+  max-width: 400px !important;
+  height: auto !important;
+  right: 20px !important;
+  top: 20px !important;
+  bottom: auto !important;
+  left: auto !important;
+
+  border-radius: 8px !important;
+  overflow: hidden !important;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.25) !important;
+  z-index: 9999 !important;
+}
+
+/* Esconde o toast nativo do Facebook */
+#fb-root > div[style*="position: fixed"] {
+  display: none !important;
+}
