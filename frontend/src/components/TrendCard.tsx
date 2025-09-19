@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
 
@@ -9,6 +9,8 @@ interface TrendCardProps {
 export default function TrendCard({ trend }: TrendCardProps) {
   const { user } = useUser();
   const navigate = useNavigate();
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(trend.likes);
 
   const requireAuth = (action: () => void) => {
     if (!user) {
@@ -19,6 +21,8 @@ export default function TrendCard({ trend }: TrendCardProps) {
   };
 
   const handleLike = () => requireAuth(() => {
+    setIsLiked(!isLiked);
+    setLikeCount(prev => isLiked ? prev - 1 : prev + 1);
     // TODO: chamar API de like
   });
 
@@ -29,31 +33,73 @@ export default function TrendCard({ trend }: TrendCardProps) {
   const handleShare = () => requireAuth(() => {
     // TODO: lógica de compartilhamento
   });
+
   return (
-    <div style={{ background: "#3e497a33", padding: 16, borderRadius: 12, border: "1.5px solid #3e8cff", color: "#e0e6f7" }}>
+    <div className="trend-card animate-fade-in">
       {trend.thumbnail && (
-        <img src={trend.thumbnail} alt={trend.title} style={{ width: "100%", maxHeight: 200, objectFit: "cover", borderRadius: 8, marginBottom: 8 }} />
+        <div className="trend-thumbnail">
+          <img 
+            src={trend.thumbnail} 
+            alt={trend.title} 
+            className="thumbnail-image"
+          />
+          <div className="thumbnail-overlay">
+            <div className="play-button">
+              <span className="play-icon">▶</span>
+            </div>
+          </div>
+        </div>
       )}
-      <h3>{trend.title}</h3>
-      <p>{trend.summary}</p>
+      
       {trend.tags.length > 0 && (
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 6 }}>
-          {trend.tags.map((t) => (
-            <span key={t} style={{ background: "#3e8cff33", padding: "2px 8px", borderRadius: 12, fontSize: 12 }}>{t}</span>
+        <div className="trend-tags">
+          {trend.tags.map((tag) => (
+            <span key={tag} className="tag">{tag}</span>
           ))}
         </div>
       )}
-      <p>Likes: {trend.likes}</p>
 
-      <div style={{ display: "flex", gap: 8 }}>
-        <button onClick={handleLike} style={{ background: "#3e8cff", color: "#fff", border: "none", padding: "6px 12px", borderRadius: 6, cursor: "pointer" }}>
-          Curtir
+      <div className="trend-content">
+        <h3 className="trend-title">{trend.title}</h3>
+        <p className="trend-summary">{trend.summary}</p>
+        
+        <div className="trend-stats">
+          <div className="stat-item">
+            <span className="stat-icon">❤️</span>
+            <span className="stat-value">{likeCount}</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-icon">💬</span>
+            <span className="stat-value">0</span>
+          </div>
+          <div className="stat-item">
+            <span className="stat-icon">👁️</span>
+            <span className="stat-value">1.2k</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="trend-actions">
+        <button 
+          onClick={handleLike} 
+          className={`action-btn like-btn ${isLiked ? 'liked' : ''}`}
+        >
+          <span className="action-icon">{isLiked ? '❤️' : '🤍'}</span>
+          <span className="action-text">Curtir</span>
         </button>
-        <button onClick={handleComment} style={{ background: "#3e8cff", color: "#fff", border: "none", padding: "6px 12px", borderRadius: 6, cursor: "pointer" }}>
-          Comentar
+        <button 
+          onClick={handleComment} 
+          className="action-btn comment-btn"
+        >
+          <span className="action-icon">💬</span>
+          <span className="action-text">Comentar</span>
         </button>
-        <button onClick={handleShare} style={{ background: "#3e8cff", color: "#fff", border: "none", padding: "6px 12px", borderRadius: 6, cursor: "pointer" }}>
-          Compartilhar
+        <button 
+          onClick={handleShare} 
+          className="action-btn share-btn"
+        >
+          <span className="action-icon">📤</span>
+          <span className="action-text">Compartilhar</span>
         </button>
       </div>
     </div>

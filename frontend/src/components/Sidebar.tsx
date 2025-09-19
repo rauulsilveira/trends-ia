@@ -3,7 +3,12 @@ import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
 
-export default function Sidebar() {
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export default function Sidebar({ isOpen = false, onClose }: SidebarProps) {
   const { user } = useUser();
   const [googleCounts, setGoogleCounts] = useState<{ clicks: number; trends: number }>({ clicks: 0, trends: 0 });
 
@@ -45,85 +50,76 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside
-      style={{
-        width: 220,
-        background: "#232946",
-        color: "#e0e6f7",
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        paddingTop: 32,
-        boxSizing: "border-box",
-        borderRight: "1.5px solid #3e8cff",
-      }}
-    >
-      <nav style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        <div style={{ padding: "8px 16px", color: "#b8c1ec", fontSize: 12, fontWeight: 700 }}>YouTube</div>
-        {youtubeMenu.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            style={({ isActive }) => ({
-              padding: "8px 28px",
-              borderRadius: "0 24px 24px 0",
-              textDecoration: "none",
-              color: "#e0e6f7",
-              background: isActive ? "#3e8cff33" : "transparent",
-              fontWeight: 600,
-              transition: "background 0.2s",
-            })}
-          >
-            {item.label}
-          </NavLink>
-        ))}
+    <aside className={`sidebar-genz ${isOpen ? 'open' : ''}`}>
+      {/* Overlay para fechar no mobile */}
+      {isOpen && <div className="sidebar-overlay" onClick={onClose}></div>}
+      
+      <nav className="sidebar-nav">
+        {/* YouTube Section */}
+        <div className="nav-section">
+          <div className="nav-section-title">
+            <span className="section-icon">📺</span>
+            YouTube
+          </div>
+          {youtubeMenu.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+            >
+              <span className="nav-icon">🎬</span>
+              {item.label}
+            </NavLink>
+          ))}
+        </div>
 
-        <div style={{ padding: "8px 16px", color: "#b8c1ec", fontSize: 12, fontWeight: 700, marginTop: 8 }}>Google</div>
-        {googleMenu.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            style={({ isActive }) => ({
-              padding: "8px 28px",
-              borderRadius: "0 24px 24px 0",
-              textDecoration: "none",
-              color: "#e0e6f7",
-              background: isActive ? "#3e8cff33" : "transparent",
-              fontWeight: 600,
-              transition: "background 0.2s",
-            })}
-          >
-            <span>{item.label}</span>
-            {item.path.endsWith("mais-clicados") && googleCounts.clicks > 0 && (
-              <span style={{ marginLeft: 8, background: "#3e8cff", color: "#fff", borderRadius: 12, padding: "0 8px", fontSize: 12 }}>{googleCounts.clicks}</span>
-            )}
-            {item.path.endsWith("maiores-tendencias") && googleCounts.trends > 0 && (
-              <span style={{ marginLeft: 8, background: "#3e8cff", color: "#fff", borderRadius: 12, padding: "0 8px", fontSize: 12 }}>{googleCounts.trends}</span>
-            )}
-          </NavLink>
-        ))}
+        {/* Google Section */}
+        <div className="nav-section">
+          <div className="nav-section-title">
+            <span className="section-icon">🔍</span>
+            Google
+          </div>
+          {googleMenu.map((item) => (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+            >
+              <span className="nav-icon">
+                {item.path.endsWith("mais-clicados") ? "👆" : "📈"}
+              </span>
+              <span className="nav-label">{item.label}</span>
+              {item.path.endsWith("mais-clicados") && googleCounts.clicks > 0 && (
+                <span className="nav-badge">{googleCounts.clicks}</span>
+              )}
+              {item.path.endsWith("maiores-tendencias") && googleCounts.trends > 0 && (
+                <span className="nav-badge">{googleCounts.trends}</span>
+              )}
+            </NavLink>
+          ))}
+        </div>
 
+        {/* Admin Section */}
         {user?.role === "admin" && (
-          <>
-            <div style={{ padding: "8px 16px", color: "#b8c1ec", fontSize: 12, fontWeight: 700, marginTop: 8 }}>Admin</div>
+          <div className="nav-section admin-section">
+            <div className="nav-section-title">
+              <span className="section-icon">👑</span>
+              Admin
+            </div>
             {adminMenu.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
-                style={({ isActive }) => ({
-                  padding: "8px 28px",
-                  borderRadius: "0 24px 24px 0",
-                  textDecoration: "none",
-                  color: "#e0e6f7",
-                  background: isActive ? "#3e8cff33" : "transparent",
-                  fontWeight: 600,
-                  transition: "background 0.2s",
-                })}
+                className={({ isActive }) => `nav-link admin-link ${isActive ? 'active' : ''}`}
               >
+                <span className="nav-icon">
+                  {item.label.includes("Trends") ? "✅" : 
+                   item.label.includes("Usuários") ? "👥" : "⚙️"}
+                </span>
                 {item.label}
               </NavLink>
             ))}
-          </>
+          </div>
         )}
       </nav>
     </aside>

@@ -3,7 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
 import type { User } from "../contexts/UserContext";
 
-export default function Header() {
+interface HeaderProps {
+  onToggleSidebar?: () => void;
+}
+
+export default function Header({ onToggleSidebar }: HeaderProps) {
   const { user, setUser } = useUser();
   const navigate = useNavigate();
 
@@ -24,43 +28,63 @@ export default function Header() {
   };
 
   return (
-    <header
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        padding: "12px 24px",
-        background: "#232946",
-        color: "#e0e6f7",
-      }}
-    >
-      <div>
-        <span style={{ fontWeight: 600, fontSize: 18 }}>Trendly</span>
+    <header className="header-genz">
+      <div className="header-left">
+        {/* Hamburger Menu Button */}
+        <button
+          className="hamburger-btn"
+          onClick={onToggleSidebar}
+          aria-label="Toggle menu"
+        >
+          <div className="hamburger-line"></div>
+          <div className="hamburger-line"></div>
+          <div className="hamburger-line"></div>
+        </button>
+        
+        <div className="logo-container">
+          <h1 className="header-logo">Trendly</h1>
+          <div className="logo-glow"></div>
+        </div>
       </div>
-      
 
-      <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+      <div className="header-right">
         {user ? (
           <>
-            <span>{user.name}</span>
+            <div className="user-info">
+              <img 
+                src={user.picture} 
+                alt={user.name}
+                className="user-avatar"
+              />
+              <div className="user-details">
+                <span className="user-name">{user.name}</span>
+                <span className={`role-badge ${user.role}`}>
+                  {user.role === "admin" ? "Admin" : "User"}
+                </span>
+              </div>
+            </div>
             <button
               onClick={toggleRole}
-              style={{ padding: "4px 8px", borderRadius: 4, cursor: "pointer" }}
+              className="btn-ghost role-toggle"
             >
+              <span className="btn-icon">🔄</span>
               {user.role === "admin" ? "Admin" : "User"}
             </button>
             <button
               onClick={handleLogout}
-              style={{ padding: "4px 8px", borderRadius: 4, cursor: "pointer" }}
+              className="btn-ghost logout-btn"
             >
-              Logout
+              <span className="btn-icon">🚪</span>
+              Sair
             </button>
           </>
         ) : (
           <button
             onClick={() => navigate("/login")}
-            style={{ padding: "4px 8px", borderRadius: 4, cursor: "pointer" }}
+            className="btn-primary"
           >
-            Login
+            <span className="btn-icon">👤</span>
+            Entrar
           </button>
         )}
       </div>

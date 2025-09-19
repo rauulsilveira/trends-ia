@@ -161,118 +161,60 @@ export default function Login() {
 
   return (
     <>
-      <div style={{
-        minHeight: "100vh",
-        background: "linear-gradient(135deg, #232946 0%, #3e497a 100%)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        color: "white"
-      }}>
-        <div style={{
-          background: "rgba(255, 255, 255, 0.1)",
-          padding: "48px",
-          borderRadius: "16px",
-          backdropFilter: "blur(10px)",
-          border: "1px solid rgba(255, 255, 255, 0.2)",
-          textAlign: "center",
-          maxWidth: "400px",
-          width: "90%"
-        }}>
-          <h1 style={{ 
-            margin: "0 0 8px 0", 
-            fontSize: "32px", 
-            fontWeight: "700",
-            background: "linear-gradient(45deg, #3e8cff, #00d4ff)",
-            WebkitBackgroundClip: "text",
-            WebkitTextFillColor: "transparent"
-          }}>
-            Trendly
-          </h1>
+      <div className="login-container">
+        {/* Background animado com partículas */}
+        <div className="login-background">
+          <div className="particle"></div>
+          <div className="particle"></div>
+          <div className="particle"></div>
+          <div className="particle"></div>
+          <div className="particle"></div>
+        </div>
+
+        <div className="login-card animate-fade-in">
+          <div className="logo-container">
+            <h1 className="logo-text">Trendly</h1>
+            <div className="logo-glow"></div>
+          </div>
           
-          <p style={{ 
-            margin: "0 0 32px 0", 
-            color: "#b8c1ec", 
-            fontSize: "16px" 
-          }}>
-            Faça login para acessar as tendências
+          <p className="login-subtitle">
+            Conteúdo rápido, direto e que conecta você ao agora.
           </p>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div className="login-buttons">
             <button
               onClick={handleFacebookLogin}
               disabled={loading || !fbReady}
-              style={{
-                padding: "12px 24px",
-                borderRadius: "8px",
-                background: fbReady ? "#1877f2" : "#6b7280",
-                color: "white",
-                border: "none",
-                cursor: (loading || !fbReady) ? "not-allowed" : "pointer",
-                fontSize: "16px",
-                fontWeight: "600",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "8px",
-                opacity: (loading || !fbReady) ? 0.7 : 1,
-                transition: "all 0.2s"
-              }}
+              className={`btn-primary ${(loading || !fbReady) ? 'disabled' : ''}`}
             >
               {loading ? (
-                "Entrando..."
+                <span className="loading-text">Entrando...</span>
               ) : !fbReady ? (
-                "Carregando Facebook..."
+                <span className="loading-text">Carregando Facebook...</span>
               ) : (
                 <>
-                  <span style={{ fontSize: "20px" }}>📘</span>
+                  <span className="btn-icon">📘</span>
                   Entrar com Facebook
                 </>
               )}
             </button>
 
-            <div style={{ 
-              display: "flex", 
-              alignItems: "center", 
-              margin: "16px 0",
-              color: "#b8c1ec"
-            }}>
-              <div style={{ flex: 1, height: "1px", background: "#b8c1ec" }} />
-              <span style={{ margin: "0 16px", fontSize: "14px" }}>ou</span>
-              <div style={{ flex: 1, height: "1px", background: "#b8c1ec" }} />
+            <div className="divider">
+              <div className="divider-line"></div>
+              <span className="divider-text">ou</span>
+              <div className="divider-line"></div>
             </div>
 
             <button
               onClick={handleMockLogin}
-              style={{
-                padding: "12px 24px",
-                borderRadius: "8px",
-                background: "transparent",
-                color: "#3e8cff",
-                border: "2px solid #3e8cff",
-                cursor: "pointer",
-                fontSize: "16px",
-                fontWeight: "600",
-                transition: "all 0.2s"
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.background = "#3e8cff";
-                e.currentTarget.style.color = "white";
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.background = "transparent";
-                e.currentTarget.style.color = "#3e8cff";
-              }}
+              className="btn-secondary"
             >
-              🚀 Login de Desenvolvimento
+              <span className="btn-icon">🚀</span>
+              Login de Desenvolvimento
             </button>
           </div>
 
-          <p style={{ 
-            margin: "24px 0 0 0", 
-            color: "#8b9dc3", 
-            fontSize: "12px" 
-          }}>
+          <p className="login-terms">
             Ao fazer login, você concorda com nossos termos de uso
           </p>
         </div>
