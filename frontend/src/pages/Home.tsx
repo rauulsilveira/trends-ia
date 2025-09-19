@@ -28,15 +28,16 @@ export default function Home() {
 
   // Landing Page para usuários não logados
   return (
-    <div style={{ 
-      minHeight: "100vh", 
-      background: "linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #8B5CF6 100%)",
-      position: "relative",
-      overflow: "hidden",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center"
-    }}>
+        <div style={{
+          minHeight: "100vh",
+          background: "linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #8B5CF6 100%)",
+          position: "relative",
+          overflow: "hidden",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "20px 0"
+        }}>
       {/* Partículas animadas de fundo */}
       <div style={{
         position: "absolute",
@@ -67,16 +68,18 @@ export default function Home() {
       </div>
 
       {/* Conteúdo principal */}
-      <div style={{
-        position: "relative",
-        zIndex: 2,
-        textAlign: "center",
-        color: "white",
-        maxWidth: "800px",
-        padding: "0 20px"
-      }}>
+        <div style={{
+          position: "relative",
+          zIndex: 2,
+          textAlign: "center",
+          color: "white",
+          maxWidth: "800px",
+          padding: "0 20px",
+          maxHeight: "90vh",
+          overflowY: "auto"
+        }}>
         {/* Logo */}
-        <div style={{ marginBottom: "40px" }}>
+        <div style={{ marginBottom: "30px" }}>
           <h1 style={{
             fontSize: "4rem",
             fontWeight: "800",
@@ -94,9 +97,9 @@ export default function Home() {
 
         {/* Lema principal */}
         <h2 style={{
-          fontSize: "2.5rem",
+          fontSize: "2.2rem",
           fontWeight: "700",
-          margin: "0 0 20px 0",
+          margin: "0 0 15px 0",
           lineHeight: "1.2",
           textShadow: "0 2px 10px rgba(0, 0, 0, 0.3)"
         }}>
@@ -105,9 +108,9 @@ export default function Home() {
 
         {/* Explicação complementar */}
         <p style={{
-          fontSize: "1.3rem",
+          fontSize: "1.2rem",
           color: "#CBD5E1",
-          margin: "0 0 50px 0",
+          margin: "0 0 40px 0",
           lineHeight: "1.6",
           maxWidth: "600px",
           marginLeft: "auto",
@@ -122,7 +125,7 @@ export default function Home() {
           gap: "20px",
           justifyContent: "center",
           flexWrap: "wrap",
-          marginBottom: "60px"
+          marginBottom: "40px"
         }}>
           <Link
             to={user ? "/google/mais-clicados" : "/login"}
@@ -187,12 +190,12 @@ export default function Home() {
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
-          gap: "30px",
-          marginTop: "60px"
+          gap: "20px",
+          marginTop: "40px"
         }}>
           <div style={{
             background: "rgba(255, 255, 255, 0.05)",
-            padding: "30px 20px",
+            padding: "20px 15px",
             borderRadius: "20px",
             border: "1px solid rgba(255, 255, 255, 0.1)",
             backdropFilter: "blur(10px)",
@@ -205,7 +208,7 @@ export default function Home() {
           
           <div style={{
             background: "rgba(255, 255, 255, 0.05)",
-            padding: "30px 20px",
+            padding: "20px 15px",
             borderRadius: "20px",
             border: "1px solid rgba(255, 255, 255, 0.1)",
             backdropFilter: "blur(10px)",
@@ -218,7 +221,7 @@ export default function Home() {
           
           <div style={{
             background: "rgba(255, 255, 255, 0.05)",
-            padding: "30px 20px",
+            padding: "20px 15px",
             borderRadius: "20px",
             border: "1px solid rgba(255, 255, 255, 0.1)",
             backdropFilter: "blur(10px)",
