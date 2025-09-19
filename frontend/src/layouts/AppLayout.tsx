@@ -16,11 +16,11 @@ export default function AppLayout() {
   };
 
   return (
-    <div className="app-layout">
+    <div style={{ display: "flex", minHeight: "100vh", background: "#0F172A" }}>
       <Sidebar isOpen={sidebarOpen} onClose={handleCloseSidebar} />
-      <div className="main-content">
+      <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
         <Header onToggleSidebar={handleToggleSidebar} />
-        <main className="main-area">
+        <main style={{ flex: 1, padding: 32, background: "linear-gradient(135deg, #0F172A 60%, #1E293B 100%)" }}>
           <Outlet />
         </main>
       </div>

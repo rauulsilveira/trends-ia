@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchGoogleTopTrends, type TrendDto } from "../services/trendsApi";
-import AdminTrendCard from "../components/AdminTrendCard";
+import TrendCard from "../components/TrendCard";
 
 export default function GoogleTopTrendsPage() {
   const [items, setItems] = useState<TrendDto[]>([]);
@@ -32,10 +32,16 @@ export default function GoogleTopTrendsPage() {
       {items.length > 0 && (
         <div style={{ display: "grid", gap: 16 }}>
           {items.map((t) => (
-            <AdminTrendCard 
+            <TrendCard 
               key={t.id} 
-              trend={{ id: t.id, title: t.title, summary: t.summary, tags: safeParseTags(t.tags), likes: 0, thumbnail: t.thumbnail || undefined }} 
-              onRemoved={(id) => setItems(prev => prev.filter(item => item.id !== id))}
+              trend={{ 
+                id: t.id, 
+                title: t.title, 
+                summary: t.summary, 
+                tags: safeParseTags(t.tags), 
+                likes: Math.floor(Math.random() * 1000), // Mock likes para demonstração
+                thumbnail: t.thumbnail || undefined 
+              }} 
             />
           ))}
         </div>
