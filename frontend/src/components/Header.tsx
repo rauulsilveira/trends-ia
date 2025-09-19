@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
 import type { User } from "../contexts/UserContext";
 
@@ -41,10 +41,10 @@ export default function Header({ onToggleSidebar }: HeaderProps) {
           <div className="hamburger-line"></div>
         </button>
         
-        <div className="logo-container">
+        <Link to="/" className="logo-container" style={{ textDecoration: 'none' }}>
           <h1 className="header-logo">Trendly</h1>
           <div className="logo-glow"></div>
-        </div>
+        </Link>
       </div>
 
       <div className="header-right">

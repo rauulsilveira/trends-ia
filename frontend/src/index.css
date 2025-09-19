@@ -381,6 +381,16 @@ input:focus, textarea:focus, select:focus {
 .logo-container {
   position: relative;
   margin-bottom: 16px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.logo-container:hover {
+  transform: scale(1.05);
+}
+
+.logo-container:hover .header-logo {
+  text-shadow: 0 0 20px rgba(139, 92, 246, 0.8);
 }
 
 .logo-text {
