@@ -1,24 +1,53 @@
 import React, { useEffect, useState } from "react";
-import { fetchGoogleTopClicks, type TrendDto } from "../services/trendsApi";
 import TrendCard from "../components/TrendCard";
 
+interface YoutubeTrend {
+  id: number;
+  title: string;
+  summary: string;
+  tags: string[];
+  likes: number;
+  thumbnail?: string;
+}
+
 export default function YoutubeNewsPage() {
-  const [items, setItems] = useState<TrendDto[]>([]);
+  const [items, setItems] = useState<YoutubeTrend[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true);
-        const data = await fetchGoogleTopClicks(20);
-        setItems(data);
-      } catch (e: any) {
-        setError(e?.message || "Erro ao carregar");
-      } finally {
-        setLoading(false);
+    // Mock data para YouTube Notícias
+    const mockYoutubeNews: YoutubeTrend[] = [
+      {
+        id: 1,
+        title: "Notícias do Brasil - Últimas atualizações",
+        summary: "Acompanhe as principais notícias do Brasil com análises e comentários de especialistas.",
+        tags: ["NOTÍCIAS", "BRASIL", "POLÍTICA", "ECONOMIA"],
+        likes: 1250,
+        thumbnail: "https://via.placeholder.com/400x200/8B5CF6/FFFFFF?text=Notícias+Brasil"
+      },
+      {
+        id: 2,
+        title: "Mundo em Foco - Análise Internacional",
+        summary: "Cobertura completa dos principais acontecimentos internacionais com perspectiva brasileira.",
+        tags: ["INTERNACIONAL", "MUNDO", "ANÁLISE", "NOTÍCIAS"],
+        likes: 890,
+        thumbnail: "https://via.placeholder.com/400x200/06B6D4/FFFFFF?text=Mundo+em+Foco"
+      },
+      {
+        id: 3,
+        title: "Tecnologia e Inovação",
+        summary: "As últimas novidades em tecnologia, startups e inovação que impactam o Brasil.",
+        tags: ["TECNOLOGIA", "INOVAÇÃO", "STARTUPS", "DIGITAL"],
+        likes: 2100,
+        thumbnail: "https://via.placeholder.com/400x200/F43F5E/FFFFFF?text=Tecnologia"
       }
-    })();
+    ];
+
+    setTimeout(() => {
+      setItems(mockYoutubeNews);
+      setLoading(false);
+    }, 1000);
   }, []);
 
   return (
@@ -38,8 +67,8 @@ export default function YoutubeNewsPage() {
                 id: t.id, 
                 title: t.title, 
                 summary: t.summary, 
-                tags: safeParseTags(t.tags), 
-                likes: Math.floor(Math.random() * 1000),
+                tags: t.tags, 
+                likes: t.likes,
                 thumbnail: t.thumbnail || undefined 
               }} 
             />
@@ -48,15 +77,6 @@ export default function YoutubeNewsPage() {
       )}
     </div>
   );
-}
-
-function safeParseTags(tags: string): string[] {
-  try {
-    const parsed = JSON.parse(tags);
-    return Array.isArray(parsed) ? parsed : [];
-  } catch {
-    return [];
-  }
 }
 
 
